@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <title>Estrela-Guia Tutu</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --sky: #dbeafe;
+      --ink: #0f172a;
+      --muted: #475569;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --good: #166534;
+      --warning: #b45309;
+      --line: #dbe3f0;
+      --shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #eef6ff 0%, #f8fafc 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 18px 16px 120px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      margin-top: 18px;
+    }
+
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 9vw, 3.2rem); }
+    h2 { margin: 0 0 12px; font-size: clamp(1.25rem, 6vw, 2rem); }
+    p { margin: 0 0 12px; line-height: 1.6; }
+    .small { font-size: 0.95rem; color: var(--muted); }
+
+    .banner {
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      border: 1px solid #c7d2fe;
+    }
+
+    .voice-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 18px 0 12px;
+    }
+
+    .voice-button {
+      width: 96px;
+      height: 96px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: white;
+      font-size: 38px;
+      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.35);
+      cursor: pointer;
+    }
+
+    .voice-button.listening {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      50% { transform: scale(1.06); }
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 14px 16px;
+      font-size: 1rem;
+      margin-top: 8px;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button, .action-link {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      background: var(--blue);
+      color: white;
+      padding: 14px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .secondary {
+      background: #e2e8f0;
+      color: var(--ink);
+    }
+
+    .choice {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      background: #e0f2fe;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: left;
+      border: 1px solid #bae6fd;
+      font-weight: 600;
+    }
+
+    .status {
+      min-height: 26px;
+      font-weight: 700;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .good { color: var(--good); }
+    .warn { color: var(--warning); }
+
+    .result-box {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .result-box[hidden] { display: none; }
+
+    .manual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .manual-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .manual-item strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .link-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .mini-link {
+      background: #eff6ff;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 560px) {
+      .button-row, .manual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card banner">
+      <h1>⭐ Estrela-Guia Tutu</h1>
+      <p>Eu sou sua guia de apoio para GitHub. Posso te ajudar a navegar por branch, commit, log, pull request e configurações com linguagem simples.</p>
+      <div class="voice-wrap">
+        <button class="voice-button" id="voiceButton" aria-label="Ativar microfone">🎙️</button>
+      </div>
+      <p id="status" class="status">Toque no microfone e diga: “quero ver o log” ou “mostrar branch”.</p>
+      <input id="command" type="text" placeholder="Ou escreva: branch, log, pull request, arquivos, ações..." />
+      <div class="button-row">
+        <button id="guideButton">Guiar-me</button>
+        <button class="secondary" id="randomButton">Dica rápida</button>
+      </div>
+    </section>
+
+    <section class="card" id="routeCard" hidden>
+      <h2 id="routeTitle">Rota sugerida</h2>
+      <p id="routeText">Aqui vai a orientação.</p>
+      <div class="link-bar">
+        <a id="routeLink" class="mini-link" target="_blank" rel="noopener">Abrir no GitHub</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Atalhos</h2>
+      <button class="choice" data-command="trocar branch">“quero trocar branch”</button>
+      <button class="choice" data-command="encontrar log">“quero ver o log”</button>
+      <button class="choice" data-command="ver pull request">“quero ver pull request”</button>
+      <button class="choice" data-command="abrir arquivos">“quero abrir arquivos”</button>
+      <button class="choice" data-command="ver ações">“quero ver ações”</button>
+      <button class="choice" data-command="configuração">“quero ver configuração”</button>
+    </section>
+
+    <section class="card">
+      <h2>Manual rápido</h2>
+      <div class="manual-grid">
+        <div class="manual-item">
+          <strong>Branch</strong>
+          <p class="small">É o ramo ou linha de trabalho do projeto. Você usa para separar versões e mudanças.</p>
+        </div>
+        <div class="manual-item">
+          <strong>Commit</strong>
+          <p class="small">É um ponto salvo com uma alteração. Pense como um checkpoint do código.</p>
+        </div>
+        <div class="manual-item">
+          <strong>Log</strong>
+          <p class="small">É o histórico das alterações. Mostra quando e quem mudou cada coisa.</p>
+        </div>
+        <div class="manual-item">
+          <strong>Pull request</strong>
+          <p class="small">É um pedido para revisar e juntar alterações antes de entrar no projeto principal.</p>
+        </div>
+        <div class="manual-item">
+          <strong>Actions</strong>
+          <p class="small">São workflows e automações. Ações podem testar, compilar ou rodar etapas do projeto.</p>
+        </div>
+        <div class="manual-item">
+          <strong>Configuração</strong>
+          <p class="small">É a área de ajustes do repositório, permissões, proteção e regras do projeto.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Tradutor de contexto</h2>
+      <p class="small">Cole uma mensagem em inglês e eu te explico em português simples e sugiro uma resposta curta.</p>
+      <textarea id="englishInput" placeholder="Exemplo: Please review my changes and merge when ready."></textarea>
+      <div class="button-row">
+        <button id="translateButton">Explicar em português</button>
+        <button class="secondary" id="clearButton">Limpar</button>
+      </div>
+      <div id="translationResult" class="result-box" hidden>
+        <h3>Tradução e contexto</h3>
+        <p id="translationText"></p>
+        <p><strong>Resposta sugerida:</strong></p>
+        <p id="replyText"></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const repoBase = 'https://github.com/Sounavy33/2-bal-l';
+    const status = document.getElementById('status');
+    const routeCard = document.getElementById('routeCard');
+    const routeTitle = document.getElementById('routeTitle');
+    const routeText = document.getElementById('routeText');
+    const routeLink = document.getElementById('routeLink');
+    const commandInput = document.getElementById('command');
+
+    const routes = [
+      { keywords: ['branch', 'ramo', 'versao', 'versão', 'trocar'], title: 'Trocar ou consultar branch', text: 'Você pode abrir a página de branches para escolher ou verificar o ramo ativo.', path: '/branches' },
+      { keywords: ['log', 'historico', 'histórico', 'commit', 'commits'], title: 'Encontrar o log', text: 'O histórico de alterações fica em commits. Esse é o caminho mais direto para ver o log do projeto.', path: '/commits' },
+      { keywords: ['pull', 'pedido', 'alteracao', 'alteração', 'review', 'revisar'], title: 'Ver pull request', text: 'Os pedidos de alteração ficam em pull requests, onde você pode revisar e acompanhar mudanças.', path: '/pulls' },
+      { keywords: ['arquivo', 'arquivos', 'codigo', 'código', 'pasta', 'pastas'], title: 'Abrir arquivos do projeto', text: 'A página de arquivos mostra tudo que está no repositório, incluindo a estrutura e os arquivos principais.', path: '/tree/main' },
+      { keywords: ['acao', 'ações', 'workflow', 'automacao', 'automação', 'rodar', 'execucao'], title: 'Abrir ações e execuções', text: 'A área de ações mostra workflows, automações e execução do projeto.', path: '/actions' },
+      { keywords: ['configuracao', 'configuração', 'ajuste', 'ajustes', 'settings'], title: 'Abrir configurações', text: 'A configuração do repositório guarda permissões, proteção e regras do projeto.', path: '/settings' },
+      { keywords: ['inicio', 'home', 'principal', 'inicio do repo'], title: 'Voltar para a página principal', text: 'O ponto de partida é a página do repositório, onde ficam os arquivos e informações principais.', path: '' }
+    ];
+
+    function clean(value) {
+      return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function guideByText(rawText) {
+      const value = clean(rawText);
+      if (!value.trim()) {
+        status.className = 'status warn';
+        status.textContent = 'Nenhum comando foi digitado. Tente algo como “log”, “branch” ou “arquivos”.';
+        routeCard.hidden = true;
+        return;
+      }
+
+      const match = routes.find(r => r.keywords.some(keyword => value.includes(keyword)));
+
+      if (!match) {
+        status.className = 'status warn';
+        status.textContent = 'Ainda não entendi. Tente: branch, log, pull request, arquivos, ações, configura��ão.';
+        routeCard.hidden = true;
+        return;
+      }
+
+      const target = match.path ? repoBase + match.path : repoBase;
+      routeTitle.textContent = '⭐ ' + match.title;
+      routeText.textContent = match.text;
+      routeLink.href = target;
+      routeCard.hidden = false;
+      status.className = 'status good';
+      status.textContent = 'Encontrei o caminho. Toque em “Abrir no GitHub”.';
+    }
+
+    document.getElementById('guideButton').addEventListener('click', () => {
+      guideByText(commandInput.value);
+    });
+
+    commandInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        guideByText(commandInput.value);
+      }
+    });
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        commandInput.value = button.dataset.command;
+        guideByText(button.dataset.command);
+      });
+    });
+
+    document.getElementById('randomButton').addEventListener('click', () => {
+      const tips = [
+        'Tente: “quero ver o log”',
+        'Tente: “quero trocar branch”',
+        'Tente: “quero ver pull request”',
+        'Tente: “quero abrir arquivos”',
+        'Tente: “quero ver configurações”'
+      ];
+      const tip = tips[Math.floor(Math.random() * tips.length)];
+      commandInput.value = tip.replace('Tente: ', '');
+      status.className = 'status';
+      status.textContent = tip;
+    });
+
+    const VoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const voiceButton = document.getElementById('voiceButton');
+
+    if (!VoiceRecognition) {
+      voiceButton.disabled = true;
+      voiceButton.style.opacity = '0.5';
+      status.className = 'status warn';
+      status.textContent = 'Reconhecimento de voz não está disponível neste navegador. Escreva o comando abaixo.';
+    } else {
+      const recognition = new VoiceRecognition();
+      recognition.lang = 'pt-BR';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        voiceButton.classList.add('listening');
+        status.className = 'status';
+        status.textContent = 'Estou ouvindo...';
+      };
+
+      recognition.onend = () => {
+        voiceButton.classList.remove('listening');
+      };
+
+      recognition.onerror = () => {
+        voiceButton.classList.remove('listening');
+        status.className = 'status warn';
+        status.textContent = 'Não consegui ouvir bem. Tente de novo ou escreva o comando.';
+      };
+
+      recognition.onresult = (event) => {
+        const spoken = event.results[0][0].transcript;
+        commandInput.value = spoken;
+        guideByText(spoken);
+      };
+
+      voiceButton.addEventListener('click', () => recognition.start());
+    }
+
+    function explainEnglishMessage(rawText) {
+      const value = String(rawText || '').trim();
+      if (!value) {
+        document.getElementById('translationResult').hidden = true;
+        return;
+      }
+
+      const lower = clean(value);
+      let simple = 'Essa mensagem pede revisão, atenção ou acompanhamento de uma alteração.';
+      let reply = 'Claro, vou revisar isso e te retorno em breve.';
+
+      if (lower.includes('review') || lower.includes('revisar')) {
+        simple = 'A pessoa está pedindo para revisar as mudanças antes de aceitar.';
+        reply = 'Claro, vou revisar as alterações e te retorno com o resultado.';
+      } else if (lower.includes('merge') || lower.includes('mesclar')) {
+        simple = 'A pessoa está pedindo para juntar as alterações no projeto principal.';
+        reply = 'Claro, vou revisar e fazer o merge quando estiver pronto.';
+      } else if (lower.includes('please') || lower.includes('por favor')) {
+        simple = 'Há um pedido de ajuda ou ação direta.';
+        reply = 'Claro, vou resolver isso agora e te aviso quando estiver concluído.';
+      } else if (lower.includes('approve') || lower.includes('aprovar')) {
+        simple = 'A pessoa quer aprovação da alteração.';
+        reply = 'Claro, vou confirmar a aprovação e te avisar assim que estiver concluído.';
+      } else if (lower.includes('need') || lower.includes('precisa')) {
+        simple = 'A mensagem indica que alguém precisa de uma ação ou suporte.';
+        reply = 'Entendi. Vou verificar isso e te retorno com a próxima etapa.';
+      }
+
+      document.getElementById('translationText').textContent = 'Tradução simples: ' + simple + ' Em português: "' + value + '" significa que a pessoa está pedindo atenção à mudança ou ato solicitado.';
+      document.getElementById('replyText').textContent = reply;
+      document.getElementById('translationResult').hidden = false;
+    }
+
+    document.getElementById('translateButton').addEventListener('click', () => {
+      explainEnglishMessage(document.getElementById('englishInput').value);
+    });i
+
+    document.getElementById('clearButton').addEventListener('click', () => {
+      document.getElementById('englishInput').value = '';
+      document.getElementById('translationResult').hidden = true;
+    });
+  </script>
+</body>
+</html>
